@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+
+spec:
+  template:
+    metadata:
+      name: {{ .Release.Name }}
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: fabiano341/aspnetcoreapp:3.0
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+      #strategy:
+      #type: Recreate
+
+  replicas: {{ .Values.replicas }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+spec:
+  type: NodePort
+  selector:
+    app: {{ .Release.Name }} 
+  ports:
+    - name: http
+      port: {{ .Values.port }}
+      targetPort: {{ .Values.port }}
+      nodePort: {{ .Values.nodePort }}
+
+---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-configmap
+  namespace: default
+data:
+  teste: VariavelTestada
