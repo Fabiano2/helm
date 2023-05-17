@@ -1,7 +1,7 @@
 # Helm Example
 This is a example of a deployment, configmap and service creation using helm chart.
 
-## How use:
+## How to use:
 
 Clone it:
 
